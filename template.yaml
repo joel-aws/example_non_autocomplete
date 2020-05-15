@@ -1,0 +1,35 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  BranchCloner
+
+  Sample SAM Template for BranchCloner
+
+Globals:
+  Function:
+    Timeout: 3
+
+Resources:
+  BranchClonerFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src
+      Handler: branch_cloner/app.lambda_handler
+      Runtime: python3.6
+      Events:
+        HelloWorld:
+          Type: CloudWatchEvent
+          Properties:
+            Pattern:
+              source:
+                - aws.codepipeline
+              detail-type:
+                - CodePipeline Pipeline Execution State Change
+
+Outputs:
+  BranchClonerFunction:
+    Description: "Branch ClonerLambda Function ARN"
+    Value: !GetAtt BranchClonerFunction.Arn
+  HelloWorldFunctionIamRole:
+    Description: "Implicit IAM Role created for Branch Cloner function"
+    Value: !GetAtt BranchClonerFunctionRole.Arn
